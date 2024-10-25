@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/tsd")
+@RequestMapping("api/v1/tsd/master")
 @CrossOrigin
 @Tag(name = "Product category", description = "Operations related to fetch list of product categories")
 public class ProductCategoryController {

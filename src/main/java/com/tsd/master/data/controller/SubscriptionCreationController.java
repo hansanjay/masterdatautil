@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @CrossOrigin
 @RestController
-@RequestMapping("api/v1/tsd/subs")
+@RequestMapping("api/v1/tsd/master/subs")
 @Tag(name = "Subscription creation API", description = "Operations related to management of subs")
 public class SubscriptionCreationController{
 	

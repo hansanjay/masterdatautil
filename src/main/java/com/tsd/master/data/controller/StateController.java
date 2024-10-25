@@ -13,7 +13,7 @@ import com.tsd.master.data.service.StateService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/tsd")
+@RequestMapping("api/v1/tsd/master")
 @CrossOrigin
 @Tag(name = "List of states API", description = "Operations related to fetch list of states")
 public class StateController {

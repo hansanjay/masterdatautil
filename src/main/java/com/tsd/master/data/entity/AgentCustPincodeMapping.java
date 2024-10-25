@@ -23,6 +23,7 @@ public class AgentCustPincodeMapping {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	private String agentId;
 	private String custId;
 	private String addressId;

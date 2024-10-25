@@ -12,7 +12,7 @@ import com.tsd.master.data.entity.AgentCustPincodeMapping;
 @Repository
 public interface AgentCustPincodeMappingRepo extends JpaRepository<AgentCustPincodeMapping, Long>{
 	
-	@Query("SELECT acp FROM AgentCustPincodeMapping acp WHERE acp.agentId = :agentId AND acp.custId = custId")
+	@Query("SELECT acp FROM AgentCustPincodeMapping acp WHERE acp.agentId = :agentId AND acp.custId = :custId")
 	List<AgentCustPincodeMapping> agentCustMappingList(String agentId,String custId);
 
 }
