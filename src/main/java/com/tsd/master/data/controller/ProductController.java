@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("api/v1/tsd/master/prd")
 @Tag(name = "Product creation API", description = "Operations related to Product configuration")
-public class ProducController {
+public class ProductController {
 	
 	@Autowired
 	private ProductService productService;
