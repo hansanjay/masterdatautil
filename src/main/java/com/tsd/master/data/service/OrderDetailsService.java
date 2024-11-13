@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.tsd.sdk.request.OrderReq;
 import org.tsd.sdk.response.JsonSuccessResponse;
 
 import com.tsd.master.data.entity.Order;
@@ -91,7 +93,6 @@ public class OrderDetailsService {
 	@Transactional
 	@SneakyThrows
 	private void generateMonthlyOrders(Subscription subscription) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-YYYY");
 		LocalDate startDate = LocalDate.parse(subscription.getStart().toString(), formatter);
 		LocalDate endDate = LocalDate.parse(subscription.getStop().toString(), formatter);
 		
@@ -136,6 +137,65 @@ public class OrderDetailsService {
 	@SneakyThrows
 	public void deleteActiveOrders(String custId,Long subscriptionId) {
 		orderRepo.deleteFutureOrders(custId, subscriptionId);
+	}
+
+	@SneakyThrows
+	public ResponseEntity<?> fetchCustOrderDetails(String custId) {
+		List<Order> orders = orderRepo.fetchCustOrderDetails(Long.parseLong(custId));
+		if(orders.size() > 0) {
+			return ResponseEntity.ok(JsonSuccessResponse.ok("Success", HttpStatus.OK.value(), orders));
+		}else {
+			return ResponseEntity.ok(JsonSuccessResponse.fail("No orders found", HttpStatus.NOT_FOUND.value(), null));
+		}
+	}
+
+	@SneakyThrows
+	public ResponseEntity<?> getOrderById(String id) {
+		Order order = orderRepo.findByOrderId(Long.parseLong(id));
+		if(null != order) {
+			return ResponseEntity.ok(JsonSuccessResponse.ok("Success", HttpStatus.OK.value(), order));
+		}else {
+			return ResponseEntity.ok(JsonSuccessResponse.fail("No orders found", HttpStatus.NOT_FOUND.value(), null));
+		}
+	}
+
+	@SneakyThrows
+	@Transactional
+	public ResponseEntity<?> updateOrder(String id, OrderReq orderReq) {
+		Order order = orderRepo.findByOrderId(Long.parseLong(id));
+		LocalDate orderDate = LocalDate.parse(new Date().toString(), formatter);
+		if(null != order) {
+			order.setAddress_id(0);
+			order.setCustomer_id(orderReq.getCustomer_id());
+			order.setOrder_date(orderDate);
+			order.setStatus(0);
+			order.setSubscriptionId(0L);
+			
+			orderRepo.save(order);
+			
+			return ResponseEntity.ok(JsonSuccessResponse.ok("Success", HttpStatus.OK.value(), order));
+		}else {
+			return ResponseEntity.ok(JsonSuccessResponse.fail("No orders found", HttpStatus.NOT_FOUND.value(), null));
+		}
+	}
+	
+	@SneakyThrows
+	@Transactional
+	public ResponseEntity<?> createOrder(OrderReq orderReq) {
+		LocalDate orderDate = LocalDate.parse(new Date().toString(), formatter);
+		
+		Order order = Order.builder()
+				.address_id(orderReq.getAddress_id())
+				.customer_id(orderReq.getCustomer_id())
+				.order_date(orderDate)
+				.status(0)
+				.subscriptionId(0L)
+				.build();
+		
+		orderRepo.save(order);
+		
+		return ResponseEntity.ok(JsonSuccessResponse.ok("Success", HttpStatus.OK.value(), order));
+		
 	}
 
 }

@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.tsd.sdk.request.OrderReq;
 
 import com.tsd.master.data.service.OrderDetailsService;
 
@@ -33,6 +37,28 @@ public class OrderDetailsController {
 	@Operation(summary = "Update Order status", description = "Operations related to update the status of order for the customer")
     public ResponseEntity<?> createSubscription(@PathVariable("orderid") String orderid,@PathVariable("status") String status) {
         return orderDetailsService.updateOrderStatus(orderid,status);
+    }
+	
+	@GetMapping(path = "/All")
+	@Operation(summary = "Order List for customer", description = "Operations related to list of orders for the customer")
+    public ResponseEntity<?> fetchCustOrderDetails(@PathVariable("custId") String custId) {
+        return orderDetailsService.fetchCustOrderDetails(custId);
+    }
+	
+	@GetMapping("/{id}")
+	@Operation(summary = "Order details against order id", description = "Operations related to order details for the perticular order")
+    public ResponseEntity<?> getOrderById(@PathVariable("id") String id) {
+        return orderDetailsService.getOrderById(id);
+    }
+	
+	@PatchMapping("/{id}")
+    public ResponseEntity<?> updateOrder(@PathVariable("id") String id,@RequestBody OrderReq orderReq) {
+		return orderDetailsService.updateOrder(id,orderReq);
+    }
+	
+	@PostMapping("/create")
+    public ResponseEntity<?> createOrder(@RequestBody OrderReq orderReq) {
+		return orderDetailsService.createOrder(orderReq);
     }
 	
 }
