@@ -12,7 +12,7 @@ import com.tsd.master.data.entity.Pincode;
 @Repository
 public interface PincodeDistRepository extends JpaRepository<Pincode, Long>{
 	@Query("SELECT p.pincode,l.localityName,l.id FROM Locality l JOIN Pincode p ON l.pincode = p.pincode WHERE p.distrbutorId = :distrbutorId")
-	List<Object[]> findByDistrbutorId(String distrbutorId);
+	List<Object[]> findDistPincodeMapping(String pincode,String distrbutorId);
 	
 	List<Pincode> findByPincode(String pincode);
 	

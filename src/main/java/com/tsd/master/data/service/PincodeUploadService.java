@@ -56,13 +56,16 @@ public class PincodeUploadService {
 				CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
 			Set<Pincode> pincodes = new LinkedHashSet<Pincode>();
 			for (CSVRecord csvRecord : csvParser) {
-				Pincode pincode = Pincode.builder()
-						.distrbutorId(distId)
-						.pincode(csvRecord.get(0))
-						.allocated(0)
-						.localityId(Integer.parseInt(csvRecord.get(1)))
-						.build();
-				pincodes.add(pincode);
+				List<Object[]> findDistPincodeMapping = pincodeDistRepository.findDistPincodeMapping(csvRecord.get(0), distId);
+				if(findDistPincodeMapping.size() == 0) {
+					Pincode pincode = Pincode.builder()
+							.distrbutorId(distId)
+							.pincode(csvRecord.get(0))
+							.allocated(0)
+							.localityId(Integer.parseInt(csvRecord.get(1)))
+							.build();
+					pincodes.add(pincode);
+				}
 			}
 			if(!pincodes.isEmpty()){
 				pincodeDistRepository.saveAll(pincodes);
@@ -72,7 +75,7 @@ public class PincodeUploadService {
 	}
 
 	public ResponseEntity<?> fetchDistPincodeData(String agentId) {
-		List<Object[]> pincodes = pincodeDistRepository.findByDistrbutorId(agentId);
+		List<Object[]> pincodes = pincodeDistRepository.fetchAgentsOnPincodes(agentId);
 		return ResponseEntity.ok(JsonSuccessResponse.ok("Success", HttpStatus.OK.value(), pincodes));
 	}
 
